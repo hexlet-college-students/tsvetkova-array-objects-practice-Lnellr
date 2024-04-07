@@ -71,7 +71,7 @@ const tableParsing = (content) => {
 
   // step 4
   const generalTop = getAvgTop(data);
-  console.log(`Top downloads: ${generalTop.join(',')}`);
+  console.log(`Top downloads: ${generalTop.join(', ')}`);
 
   // step 5
   const [mono] = getDeveloper(data);
