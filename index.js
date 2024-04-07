@@ -1,4 +1,4 @@
-//The first
+// The first
 const convertToObject = (content) => {
   // отделили шапку от содержимого
   const [keys, ...apps] = content.trim().split('\n');
@@ -79,9 +79,7 @@ const tableParsing = (content) => {
   console.log(`Top owner: ${mono}`);
 };
 
-
-
-//The second
+// The second
 const Kukish = (content) => {
   const contentSplit = content.split('\n');
   return contentSplit;
@@ -101,7 +99,6 @@ const stackcount = (content) => {
   return res;
 };
 
-
 const getNickName = (socialString, socialNetwork) => {
   const socials = socialString.split(', ');
   for (let i = 0; i < socials.length; i += 1) {
@@ -113,7 +110,6 @@ const getNickName = (socialString, socialNetwork) => {
   }
   return 'Никнейм не найден';
 };
-
 
 const calculateExp = (startDate, endDate) => {
   const start = new Date(startDate.split('.').reverse().join('-'));
@@ -129,7 +125,6 @@ const calculateExp = (startDate, endDate) => {
 
   return `${years} years ${months} months`;
 };
-
 
 const findEducation = (edStr) => {
   const parts = edStr.split(';');
@@ -161,11 +156,110 @@ const candidateAssessment = (content) => {
   console.log(`Education: ${findEducation(Split.at(7))}`);
 };
 
-//The third
+// The third
 
-// task 3
-const actorRating = (/* content */) => {
+function count(data) {
+  let rewcount = 0;
+  let nomcount = 0;
+  const counter = data.map((first) => {
+    if (first.startsWith('Номинация')) {
+      nomcount += 1;
+    } else {
+      rewcount += 1;
+    }
+    return 1;
+  });
+  counter.push(1);
+  return [rewcount, nomcount];
+}
 
-};
+function getMoviesforYear(actorAwards, year) {
+  const moviesForYear = actorAwards.filter((award) => award.includes(year));
+  const moviesList = moviesForYear.map((award) => award.split('—')[4].trim());
+  const uniqueMovies = [...new Set(moviesList)];
+  const sortedMovies = uniqueMovies.sort().join(', ');
+  return sortedMovies;
+}
+
+function calculateAwardPerc(data) {
+  let awards = 0;
+  let nominations = 0;
+  for (let i = 0; i < data.length; i += 1) {
+    if (data[i].startsWith('Награда')) {
+      awards += 1;
+    } else if (data[i].startsWith('Номинация')) {
+      nominations += 1;
+    }
+  }
+  const totalAwardsAndNominations = awards + nominations;
+  const percentageAwards = (awards / totalAwardsAndNominations) * 100;
+  return Math.round(percentageAwards);
+}
+
+function mostAwMovie(data) {
+  const awards = {};
+  const nominations = {};
+  for (let i = 0; i < data.length; i += 1) {
+    const movie = data[i].split('—')[4].trim();
+    if (data[i].startsWith('Награда')) {
+      awards[movie] = (awards[movie] || 0) + 1;
+    } else if (data[i].startsWith('Номинация')) {
+      nominations[movie] = (nominations[movie] || 0) + 1;
+    }
+  }
+  const mostSuccessfulMovie = Object.keys(awards)
+    .sort()
+    .reduce((mostSuccessful, movie) => {
+      if (!mostSuccessful || awards[movie] + (nominations[movie] || 0)
+    > awards[mostSuccessful] + (nominations[mostSuccessful] || 0)) {
+        return movie;
+      }
+      return mostSuccessful;
+    }, null);
+
+  return mostSuccessfulMovie;
+}
+
+function mostFrequentAndLeastFrequentAwards(data) {
+  const awardsCount = {};
+  for (let i = 0; i < data.length; i += 1) {
+    if (data[i].startsWith('Номинация')) {
+      const award = data[i].split('—')[2].trim();
+      awardsCount[award] = (awardsCount[award] || 0) + 1;
+    }
+  }
+
+  const sortedAwards = Object.keys(awardsCount).sort();
+  const mostFrequentAward = sortedAwards.reduce((a, b) => {
+    if (awardsCount[a] > awardsCount[b]) {
+      return a;
+    }
+    return b;
+  });
+  const leastFrequentAward = sortedAwards.reduce((a, b) => {
+    if (awardsCount[a] < awardsCount[b]) {
+      return a;
+    }
+    return b;
+  });
+
+  console.log(`Award's pet: ${mostFrequentAward}`);
+  console.log(`Award's outsider: ${leastFrequentAward}`);
+}
+
+// Task 3
+function actorRating(content) {
+  const norma = Kukish(content);
+  const [rewards, nominations] = count(norma);
+  // 3.1
+  console.log(`Awards: Rewards: ${rewards}, Nominations: ${nominations}`);
+  // 3.2
+  console.log(`Movies 2003: ${getMoviesforYear(norma, 2003)}`);
+  // 3.3
+  console.log(`Rewards percent: ${calculateAwardPerc(norma)}%`);
+  // 3.4
+  console.log(`Most successful movie: ${mostAwMovie(norma)}`);
+  // 3.5
+}
 
 export { tableParsing, candidateAssessment, actorRating };
